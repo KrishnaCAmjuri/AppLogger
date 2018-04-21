@@ -1,5 +1,5 @@
 //
-//  AppLogger.swift
+//  KCASimpleLogger.swift
 //
 //  Created by Krishna Chaitanya Amjuri on 29/12/17.
 //
@@ -12,7 +12,7 @@ extension DispatchQueue {
     }
 }
 
-class AppLogger: NSObject {
+class KCASimpleLogger: NSObject {
     
     static var `default`: AppLogger = {
         struct Statics {
@@ -32,7 +32,7 @@ class AppLogger: NSObject {
     
     private var debugMessageFormat: String = "%@ [Debug] [%@] [%@:%@] %@ > %@" // "FormattedDate [Debug] [Threadlabel] [Filename:Linenumber] Functionname > message"
     
-    private func getDebuggingMessage(_ closureResult: Any, functionName: String, fileName: String, lineNumber: Int) -> String {
+    private func getMessageForLoggingUsing(_ closureResult: Any, functionName: String, fileName: String, lineNumber: Int) -> String {
         let nsFilePath: NSString = NSString(string: fileName)
         let fileName: String = nsFilePath.lastPathComponent
         var threadName = "main"
@@ -49,14 +49,14 @@ class AppLogger: NSObject {
         return debugMessage
     }
     
-    func debug(_ closure: @autoclosure () -> Any?, functionName: StaticString = #function, fileName: StaticString = #file, lineNumber: Int = #line) {
-        self.logln(closure, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
+    func logMessage(_ closure: @autoclosure () -> Any?, functionName: StaticString = #function, fileName: StaticString = #file, lineNumber: Int = #line) {
+        self.logMessageFor(closure, functionName: functionName, fileName: fileName, lineNumber: lineNumber)
     }
     
-    fileprivate func logln(_ closure: @autoclosure () -> Any?, functionName: StaticString = #function, fileName: StaticString = #file, lineNumber: Int = #line) {
+    fileprivate func logMessageFor(_ closure: @autoclosure () -> Any?, functionName: StaticString = #function, fileName: StaticString = #file, lineNumber: Int = #line) {
         guard let closureResult = closure() else { return}
         if self.isDebuggingEnabled {
-            print(self.getDebuggingMessage(closureResult, functionName: String(describing: functionName), fileName: String(describing: fileName), lineNumber: lineNumber))
+            print(self.getMessageForLoggingUsing(closureResult, functionName: String(describing: functionName), fileName: String(describing: fileName), lineNumber: lineNumber))
         }
     }
     
